@@ -1,0 +1,3 @@
+/Users/armanvossoughi/CLionProjects/MachineLearning/cmake-build-debug/CMakeFiles/MachineLearning.dir
+/Users/armanvossoughi/CLionProjects/MachineLearning/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/armanvossoughi/CLionProjects/MachineLearning/cmake-build-debug/CMakeFiles/rebuild_cache.dir
