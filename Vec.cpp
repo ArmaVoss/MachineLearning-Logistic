@@ -25,6 +25,14 @@ bool Vec<T>::operator==(const Vec<T>& vec) const {
     return (data == vec.data);
 }
 
+template<typename T>
+T Vec<T>::sum() const {
+    T sum_ = 0;
+    for (int i = 0; i < data.size(); ++i) {
+        sum_ += data[i];
+    }
+    return sum_;
+}
 // Explicit template instantiation for supported types
 template class Vec<int>;
 template class Vec<double>;

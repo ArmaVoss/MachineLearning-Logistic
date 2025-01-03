@@ -137,6 +137,8 @@ class Vec {
         //Update the value
         T& operator[](int index);
 
+        T sum() const;
+
 };
 
 

@@ -6,7 +6,10 @@
 #define MATRIX_H
 #include <vector>
 #include <iostream>
+#include "Vec.h"
 
+template <typename T>
+class Vec;
 
 template <typename T>
 class Matrix {
@@ -65,6 +68,29 @@ class Matrix {
             return result;
         }
 
+        template <typename U>
+          Matrix<typename std::common_type<T, U>::type> operator-(const U& scalar) const {
+                using ResultType = typename std::common_type<T, U>::type;
+                Matrix<ResultType> result(data);
+                for (int i = 0; i < result.data.size(); i++) {
+                    for (int j = 0; j < result.data[i].size(); j++) {
+                        result.data[i][j] = result.data[i][j] - scalar;
+                    }
+                }
+                return result;
+            }
+        template <typename U>
+        Matrix<typename std::common_type<T, U>::type> operator*(const U& scalar) const {
+                using ResultType = typename std::common_type<T, U>::type;
+                Matrix<ResultType> result(data);
+                for (int i = 0; i < result.data.size(); i++) {
+                    for (int j = 0; j < result.data[i].size(); j++) {
+                        result.data[i][j] = result.data[i][j] * scalar;
+                    }
+                }
+                return result;
+        }
+
         //matrix multiply
         template <typename U>
         Matrix<typename std::common_type<T, U>::type>
@@ -95,7 +121,45 @@ class Matrix {
                 }
             }
             return Matrix<ResultType>(result);
+        }
 
+        //dividing elements in one matrix by the elements in another
+        template <typename U>
+        Matrix<std::common_type_t<T,U>> operator/ (const Matrix<U>& matrix) const{
+            if (shape() != matrix.shape()) {
+                throw std::invalid_argument("Matrices do not have the same shape");
+            }
+
+            using ResultType = typename std::common_type<T, U>::type;
+            Matrix<ResultType> temp(data);
+            for (int i = 0; i < data.size(); i++) {
+                for (int j = 0; j < matrix.data[i].size(); j++) {
+                    if (matrix.data[i][j] != 0) {
+                        temp[i][j] = temp[i][j] / matrix[i][j];
+                    }
+                    else {
+                        throw::std::invalid_argument("division by zero");
+                    }
+                }
+            }
+            return temp;
+        }
+
+    //subtracting elements in one matrix by the elements in another
+    template <typename U>
+    Matrix<std::common_type_t<T,U>> operator- (const Matrix<U>& matrix) const{
+            if (shape() != matrix.shape()) {
+                throw std::invalid_argument("Matrices do not have the same shape");
+            }
+
+            using ResultType = typename std::common_type<T, U>::type;
+            Matrix<ResultType> temp(data);
+            for (int i = 0; i < data.size(); i++) {
+                for (int j = 0; j < matrix.data[i].size(); j++) {
+                    temp[i][j] = temp[i][j] - matrix[i][j];
+                }
+            }
+            return temp;
         }
 
         std::vector<T>& operator[](int row);
@@ -105,6 +169,10 @@ class Matrix {
         Matrix<T> &operator=(const Matrix<T> &matrix);
 
         bool operator==(const Matrix<T> &matrix) const;
+
+        std::pair<int, int> shape() const;
+
+        Vec<double> sum(int axis) const;
 };
 
 
