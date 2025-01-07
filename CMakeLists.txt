@@ -8,4 +8,5 @@ add_executable(MachineLearning main.cpp
         Vec.h
         Matrix.cpp
         Matrix.h
+        Parameter.h
 )

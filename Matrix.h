@@ -69,7 +69,7 @@ class Matrix {
         }
 
         template <typename U>
-          Matrix<typename std::common_type<T, U>::type> operator-(const U& scalar) const {
+        Matrix<typename std::common_type<T, U>::type> operator-(const U& scalar) const {
                 using ResultType = typename std::common_type<T, U>::type;
                 Matrix<ResultType> result(data);
                 for (int i = 0; i < result.data.size(); i++) {
@@ -79,6 +79,7 @@ class Matrix {
                 }
                 return result;
             }
+
         template <typename U>
         Matrix<typename std::common_type<T, U>::type> operator*(const U& scalar) const {
                 using ResultType = typename std::common_type<T, U>::type;
@@ -91,37 +92,37 @@ class Matrix {
                 return result;
         }
 
-        //matrix multiply
-        template <typename U>
-        Matrix<typename std::common_type<T, U>::type>
-        operator*(const Matrix<U>& matrix) {
-            int m = data.size(); //number of rows in data
-            int n = matrix.data[0].size(); //length of columns of matrix.data
-            int n_two = data[0].size(); //length of columns of data
-            if (m != n) {
-                throw std::invalid_argument("number of rows does not match the number of columns");
-            }
 
-            //ensure we only have ints, floats, and doubles
-            if constexpr (!std::is_same_v<T, int> && !std::is_same_v<T, double> && !std::is_same_v<T, float> &&
-                !std::is_same_v<U, int> && !std::is_same_v<U, double> && !std::is_same_v<U, float>) {
-                throw std::invalid_argument("Matrix must be made of numbers");
+
+    template <typename U>
+    Matrix<typename std::common_type<T, U>::type>
+    operator*(const Matrix<U>& matrix) const {
+                int m = data.size();              // rows of A
+                int k = data[0].size();           // cols of A
+                int p = matrix.data.size();       // rows of B
+                int n = matrix.data[0].size();    // cols of B
+
+                if (k != p) {
+                    throw std::invalid_argument(
+                        "Matrices cannot be multiplied: The number of columns of the left "
+                        "matrix must match the number of rows of the right matrix.");
                 }
 
-            //figure out return type
-            using ResultType = typename std::common_type<T, U>::type;
-            std::vector<std::vector<ResultType>> result(m, std::vector<ResultType>(n, ResultType()));
+                using ResultType = typename std::common_type<T, U>::type;
+                std::vector<std::vector<ResultType>> result(
+                    m, std::vector<ResultType>(n, ResultType()));
 
-            //matrix multiplication
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
-                    for (int k = 0; k < n_two; k++) {
-                        result[i][j] += data[i][k] * matrix.data[k][j];
+                for (int i = 0; i < m; i++) {
+                    for (int j = 0; j < n; j++) {
+                        for (int r = 0; r < k; r++) {
+                            result[i][j] += data[i][r] * matrix.data[r][j];
+                        }
                     }
                 }
-            }
-            return Matrix<ResultType>(result);
+
+                return Matrix<ResultType>(result);
         }
+
 
         //dividing elements in one matrix by the elements in another
         template <typename U>
@@ -162,17 +163,55 @@ class Matrix {
             return temp;
         }
 
-        std::vector<T>& operator[](int row);
+    template <typename U>
+    Matrix<typename std::common_type<T, U>::type> operator+(const Matrix<U>& matrix) const {
+            if (shape() != matrix.shape()) {
+                throw std::invalid_argument("Matrices must have the same shape for addition.");
+            }
 
-        const std::vector<T>& operator[](int row) const;
+            using ResultType = typename std::common_type<T, U>::type;
+            std::vector<std::vector<ResultType>> result(data.size(), std::vector<ResultType>(data[0].size()));
 
-        Matrix<T> &operator=(const Matrix<T> &matrix);
+            for (size_t i = 0; i < data.size(); ++i) {
+                for (size_t j = 0; j < data[i].size(); ++j) {
+                    result[i][j] = static_cast<ResultType>(data[i][j]) + static_cast<ResultType>(matrix.data[i][j]);
+                }
+            }
 
-        bool operator==(const Matrix<T> &matrix) const;
+            return Matrix<ResultType>(result);
+        }
 
-        std::pair<int, int> shape() const;
+        Matrix<T> vstack(const std::vector<T>& newRow) {
+                    if (data.empty()) {
+                        throw std::invalid_argument("Cannot perform vstack on an empty matrix.");
+                    }
 
-        Vec<double> sum(int axis) const;
+                    int originalCols = data[0].size();
+
+                    // Ensure the new row matches the number of columns
+                    if (newRow.size() != originalCols) {
+                        throw std::invalid_argument("New row must have the same number of columns as the matrix.");
+                    }
+
+                    data.push_back(newRow); // Add the new row
+
+                    return Matrix<T>(data);
+                }
+
+            std::vector<T>& operator[](int row);
+
+            const std::vector<T>& operator[](int row) const;
+
+            Matrix<T> &operator=(const Matrix<T> &matrix);
+
+            bool operator==(const Matrix<T> &matrix) const;
+
+            std::pair<int, int> shape() const;
+
+            Vec<double> sum(int axis) const;
+
+
+
 };
 
 

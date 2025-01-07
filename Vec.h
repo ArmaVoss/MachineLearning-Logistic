@@ -6,9 +6,7 @@
 #define VEC_H
 #include <iostream>
 #include <vector>
-
 #include "Matrix.h"
-
 template <typename T>
 class Vec {
     private:
@@ -138,6 +136,13 @@ class Vec {
         T& operator[](int index);
 
         T sum() const;
+
+        int size() const;
+
+        auto begin() { return data.begin(); }
+        auto end() { return data.end(); }
+        auto begin() const { return data.begin(); }
+        auto end() const { return data.end(); }
 
 };
 
