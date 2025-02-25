@@ -1,12 +1,11 @@
-#Overview
+# Overview
 
-##Goal: Implement a basic Machine Learning Library
--Implemented a modular library that splits up gradient calculations, allowing interchangable loss function/activation functions if wanted
--Runs gradient descent to solve parameters, current using BCE and sigmioid activation function
--Custom vector and matrix class (tried to make it like numpy)
+## Goal: Implement a Basic Machine Learning Library
+- Modular design with separate gradient calculations, allowing interchangeable loss and activation functions.
+- Uses gradient descent to optimize parameters, currently implementing BCE (Binary Cross-Entropy) and a sigmoid activation function.
+- Custom Vector and Matrix classes, designed to mimic NumPy syntax.
 
-##Future Plans: 
--Implement SVD
--Implemenet Psuedo-matrix inverse to solve paramters for smaller datasets
--Implement linear regression
-
+## Future Plans:
+- Implement Singular Value Decomposition (SVD).
+- Implement Pseudo-inverse to solve parameters for smaller datasets.
+- Implement Linear Regression.
